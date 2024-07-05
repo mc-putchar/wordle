@@ -1,0 +1,20 @@
+Word: 
+lords
+
+POST /word
+{
+"token": "asdkjashgkdjasg",
+"attempt": "wordl"
+}
+
+REPLY:
+{
+"currentAttempt": 1,
+"status": "loser" | "incomplete" | "correct",
+"0": "absent",
+"1": "correct",
+"2": "correct",
+"3": "correct",
+"4": "present"
+}
+
