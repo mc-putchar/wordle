@@ -37,6 +37,12 @@ tc {
 	border-bottom: 5px solid green;
 }
 
+.board {
+	vertical-align: top;
+	font-size: xx-large;
+	height: 100%;
+}
+
 .keyboard {
 	font-family: 'Silkscreen', sans-serif;
 	font-size: xx-large;
@@ -47,6 +53,30 @@ tc {
 	font-size: x-large;
 	height: 1.5em;
 	width: 1.5em;
+	background-color: azure;
+}
+.key-absent {
+	font-family: 'Courier Prime', monospace;
+	font-size: x-large;
+	height: 1.5em;
+	width: 1.5em;
+	background-color: gray;
+	cursor: not-allowed;
+	pointer-events: none;
+}
+.key-present {
+	font-family: 'Courier Prime', monospace;
+	font-size: x-large;
+	height: 1.5em;
+	width: 1.5em;
+	background-color: yellow;
+}
+.key-correct {
+	font-family: 'Courier Prime', monospace;
+	font-size: x-large;
+	height: 1.5em;
+	width: 1.5em;
+	background-color: green;
 }
 
 #enter {
