@@ -6,7 +6,7 @@
 #    By: mcutura <mcutura@student.42berlin.de>      +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/07/06 01:06:12 by astavrop          #+#    #+#              #
-#    Updated: 2024/07/06 22:13:07 by astavrop         ###   ########.fr        #
+#    Updated: 2024/07/06 22:40:39 by astavrop         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -34,7 +34,7 @@ STATUS_LOSER = "loser"
 R_CORRECT = "correct"
 R_PRESENT = "present"
 R_ABSENT = "absent"
-WORDS_FN = "../words.txt"
+WORDS_FN = "words.txt"
 
 
 class AttemptRequest(BaseModel):
@@ -65,10 +65,12 @@ database = {}
 def close_db():
     session.close()
 
+
 @app.on_event("startup")
 def clone_words():
     with open(WORDS_FN, "r") as file:
         fill_db([word.replace("\n", "") for word in file.readlines()])
+
 
 @app.get("/")
 def index():
@@ -96,12 +98,16 @@ def check_word(request: AttemptRequest):
         return AttemptResponse(
             current_attempt=database[request.token], status=STATUS_LOSER, result={}
         )
-    
+
     today = date.today()
     if session.query(Word).filter_by(day=today).count() < 1:
-        correct_word: Word = set_todays_word(session.query(Word).filter_by(
-                is_assigned=False
-                ).order_by(func.random()).first().word)
+        correct_word: Word = set_todays_word(
+            session.query(Word)
+            .filter_by(is_assigned=False)
+            .order_by(func.random())
+            .first()
+            .word
+        )
     else:
         correct_word: Word = get_todays_word()
     print(correct_word.word)
