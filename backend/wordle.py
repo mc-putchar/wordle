@@ -6,7 +6,7 @@
 #    By: astavrop <astavrop@student.42berlin.de>    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/07/06 01:06:12 by astavrop          #+#    #+#              #
-#    Updated: 2024/07/06 01:07:42 by astavrop         ###   ########.fr        #
+#    Updated: 2024/07/06 18:53:02 by astavrop         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -65,7 +65,7 @@ def check_word(request: AttemptRequest):
         database[request.token] += 1
 
     # User exceeded number of attempts
-    if database[request.token] >= 5:
+    if database[request.token] > 5:
         return AttemptResponse(
             current_attempt=database[request.token], status=STATUS_LOSER, result={}
         )
