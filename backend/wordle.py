@@ -3,10 +3,10 @@
 #                                                         :::      ::::::::    #
 #    wordle.py                                          :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: astavrop <astavrop@student.42berlin.de>    +#+  +:+       +#+         #
+#    By: mcutura <mcutura@student.42berlin.de>      +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/07/06 01:06:12 by astavrop          #+#    #+#              #
-#    Updated: 2024/07/06 01:07:42 by astavrop         ###   ########.fr        #
+#    Updated: 2024/07/06 05:35:28 by mcutura          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -16,6 +16,7 @@ from typing import Dict, List, Literal
 
 from fastapi import FastAPI
 from pydantic import BaseModel, model_validator
+from starlette.responses import FileResponse
 
 app = FastAPI()
 
@@ -53,8 +54,17 @@ database = {}
 
 
 @app.get("/")
-def read_root():
-    return {"Hello": "Wordle"}
+def index():
+    return FileResponse("frontend/index.html")
+@app.get("/style.css")
+def style():
+    return FileResponse("frontend/style.css")
+@app.get("/wordle.js")
+def script():
+    return FileResponse("frontend/wordle.js")
+@app.get("/favicon.ico")
+def favicon():
+    return FileResponse("frontend/favicon.ico")
 
 
 @app.post("/word/")

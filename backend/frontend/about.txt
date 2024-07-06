@@ -1,0 +1,6 @@
+This favicon was generated using the following font:
+
+- Font Title: ZCOOL KuaiLe
+- Font Author: Copyright 2018 The ZCOOL KuaiLe Project Authors (https://www.github.com/googlefonts/zcool-kuaile)
+- Font Source: https://fonts.gstatic.com/s/zcoolkuaile/v19/tssqApdaRQokwFjFJjvM6h2WpozzoXhC2g.ttf
+- Font License: SIL Open Font License, 1.1 (http://scripts.sil.org/OFL))
