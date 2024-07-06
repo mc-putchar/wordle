@@ -1,0 +1,102 @@
+* {
+	tab-size: 4 !important;
+}
+
+body {
+	text-align: center;
+	background-color: rgb(0, 0, 0);
+	color: green;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	height: 100vh;
+	flex-direction: column;
+	position: fixed;
+	width: 100%;
+}
+
+header {
+	font-family: 'Honk', system-ui;
+	font-size: xx-large;
+}
+
+td {
+	font-size: xx-large;
+}
+
+tc {
+	margin: 0.2em;
+}
+
+.game {
+	font-family: 'Silkscreen', sans-serif;
+	font-size: xx-large;
+	color: green;
+	background-color: black;
+	border-top: 5px solid green;
+	border-bottom: 5px solid green;
+}
+
+.board {
+	vertical-align: top;
+	font-size: xx-large;
+	height: 100%;
+}
+
+.keyboard {
+	font-family: 'Silkscreen', sans-serif;
+	font-size: xx-large;
+}
+
+.key {
+	font-family: 'Courier Prime', monospace;
+	font-size: x-large;
+	height: 1.5em;
+	width: 1.5em;
+	background-color: azure;
+}
+.key-absent {
+	font-family: 'Courier Prime', monospace;
+	font-size: x-large;
+	height: 1.5em;
+	width: 1.5em;
+	background-color: gray;
+	cursor: not-allowed;
+	pointer-events: none;
+}
+.key-present {
+	font-family: 'Courier Prime', monospace;
+	font-size: x-large;
+	height: 1.5em;
+	width: 1.5em;
+	background-color: yellow;
+}
+.key-correct {
+	font-family: 'Courier Prime', monospace;
+	font-size: x-large;
+	height: 1.5em;
+	width: 1.5em;
+	background-color: green;
+}
+
+#enter {
+	width: 3em;
+	margin-left: 1em;
+	background-color: #2d88fffd;
+}
+#enter:hover {
+	background-color: #58a0fffd;
+}
+
+#backspace {
+	width: 2.5em;
+	margin-left: 1em;
+	background-color: rgb(245, 68, 177);
+}
+#backspace:hover {
+	background-color: rgb(243, 104, 190);
+}
+
+.spacer {
+	visibility: hidden;
+}

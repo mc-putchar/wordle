@@ -3,7 +3,7 @@
 #                                                         :::      ::::::::    #
 #    wordle.py                                          :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: astavrop <astavrop@student.42berlin.de>    +#+  +:+       +#+         #
+#    By: mcutura <mcutura@student.42berlin.de>      +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/07/06 01:06:12 by astavrop          #+#    #+#              #
 #    Updated: 2024/07/06 22:13:07 by astavrop         ###   ########.fr        #
@@ -23,6 +23,7 @@ from sqlalchemy.orm import sessionmaker
 from sqlalchemy.sql.expression import func, select
 
 from .database import session, Word, get_todays_word, set_todays_word, fill_db
+from starlette.responses import FileResponse
 
 app = FastAPI()
 
@@ -70,8 +71,17 @@ def clone_words():
         fill_db([word.replace("\n", "") for word in file.readlines()])
 
 @app.get("/")
-def read_root():
-    return {"Hello": "Wordle"}
+def index():
+    return FileResponse("frontend/index.html")
+@app.get("/style.css")
+def style():
+    return FileResponse("frontend/style.css")
+@app.get("/wordle.js")
+def script():
+    return FileResponse("frontend/wordle.js")
+@app.get("/favicon.ico")
+def favicon():
+    return FileResponse("frontend/favicon.ico")
 
 
 @app.post("/word/")
