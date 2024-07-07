@@ -6,7 +6,7 @@
 #    By: mcutura <mcutura@student.42berlin.de>      +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/07/06 01:06:12 by astavrop          #+#    #+#              #
-#    Updated: 2024/07/07 05:07:49 by mcutura          ###   ########.fr        #
+#    Updated: 2024/07/07 06:16:43 by mcutura          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -85,6 +85,9 @@ def script():
 @app.get("/favicon.ico")
 def favicon():
     return FileResponse("frontend/favicon.ico")
+@app.get("/wallpaper.jpg")
+def wallpaper():
+    return FileResponse("frontend/wallpaper.jpg")
 
 
 @app.post("/word/")

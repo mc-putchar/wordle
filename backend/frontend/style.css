@@ -1,18 +1,27 @@
+@import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
+
 * {
-	tab-size: 4 !important;
+	image-rendering: pixelated;
+}
+
+body, h1, h2, h3, h4, h5, h6, p, ul, li, table {
+	margin: 0;
+	padding: 0;
+	box-sizing: border-box;
 }
 
 body {
-	text-align: center;
-	background-color: rgb(0, 0, 0);
-	color: green;
+	font-family: 'Press Start 2P', cursive;
+	background-image: url('wallpaper.jpg');
+	background-color: #1a1a1a;
+	color: #e0e0e0;
 	display: flex;
-	justify-content: center;
-	align-items: center;
-	height: 100vh;
 	flex-direction: column;
-	position: fixed;
-	width: 100%;
+	align-items: center;
+	justify-content: center;
+	min-height: 100vh;
+	padding: 10px;
+	text-align: center;
 }
 
 header {
@@ -20,12 +29,83 @@ header {
 	font-size: xx-large;
 }
 
-td {
-	font-size: xx-large;
+/* Style the table and buttons */
+table {
+	border-collapse: collapse;
+	margin-top: 20px;
+	width: 100%; /* Ensure table width is 100% */
+	max-width: 600px; /* Max width for larger screens */
 }
 
-tc {
-	margin: 0.2em;
+td {
+	padding: 5px;
+}
+.letter-absent {
+	background-color: #666;
+	color: #fff;
+}
+.letter-present {
+	background-color: #ffcc00;
+	color: #000;
+}
+.letter-correct {
+	background-color: #33cc33;
+	color: #fff;
+}
+
+button {
+	width: 100%; /* Buttons take full width of cell */
+	height: 50px;
+	max-width: 50px; /* Max width for larger screens */
+	border: 2px solid #000;
+	background-color: #d3d3d3; /* Default button color */
+	color: #000;
+	font-size: 16px;
+	font-family: inherit;
+	cursor: pointer;
+	transition: background-color 0.3s;
+	margin: 2px; /* Add margin for spacing */
+}
+
+/* Define the different key states */
+.key-absent {
+	background-color: #666;
+	color: #fff;
+}
+
+.key {
+	background-color: #d3d3d3;
+	color: #000;
+}
+
+.key-present {
+	background-color: #ffcc00;
+	color: #000;
+}
+
+.key-correct {
+	background-color: #33cc33;
+	color: #fff;
+}
+
+/* Add some extra styling for buttons on hover */
+button:hover {
+	opacity: 0.8;
+}
+
+/* Additional retro elements */
+.header {
+	font-size: 24px;
+	margin: 20px 0;
+	text-align: center;
+	color: #ffcc00;
+}
+
+.footer {
+	margin-top: 20px;
+	font-size: 14px;
+	text-align: center;
+	color: #c01fff;
 }
 
 .game {
@@ -46,37 +126,6 @@ tc {
 .keyboard {
 	font-family: 'Silkscreen', sans-serif;
 	font-size: xx-large;
-}
-
-.key {
-	font-family: 'Courier Prime', monospace;
-	font-size: x-large;
-	height: 1.5em;
-	width: 1.5em;
-	background-color: azure;
-}
-.key-absent {
-	font-family: 'Courier Prime', monospace;
-	font-size: x-large;
-	height: 1.5em;
-	width: 1.5em;
-	background-color: gray;
-	cursor: not-allowed;
-	pointer-events: none;
-}
-.key-present {
-	font-family: 'Courier Prime', monospace;
-	font-size: x-large;
-	height: 1.5em;
-	width: 1.5em;
-	background-color: yellow;
-}
-.key-correct {
-	font-family: 'Courier Prime', monospace;
-	font-size: x-large;
-	height: 1.5em;
-	width: 1.5em;
-	background-color: green;
 }
 
 #enter {
