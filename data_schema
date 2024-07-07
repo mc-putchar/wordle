@@ -16,5 +16,6 @@ REPLY:
 		3: "correct",
 		4: "present"
 	}
+	prev: ['prev', 'tries']
 }
 

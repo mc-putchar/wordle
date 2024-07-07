@@ -6,7 +6,7 @@
 #    By: mcutura <mcutura@student.42berlin.de>      +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/07/06 01:06:12 by astavrop          #+#    #+#              #
-#    Updated: 2024/07/07 20:29:49 by astavrop         ###   ########.fr        #
+#    Updated: 2024/07/07 22:40:58 by astavrop         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -56,6 +56,7 @@ class AttemptResponse(BaseModel):
     current_attempt: int
     status: Literal[STATUS_MISS, STATUS_LOSER, STATUS_INCOMPLETE, STATUS_CORRECT]
     result: Dict[int, Literal[R_ABSENT, R_PRESENT, R_CORRECT]]
+    prev: List[str]
 
 
 @app.on_event("shutdown")
@@ -97,9 +98,6 @@ def wallpaper():
 
 @app.post("/word/")
 def check_word(request: AttemptRequest):
-    if session.query(Word).filter_by(word=request.attempt).count() < 1:
-        return AttemptResponse(current_attempt=0, status=STATUS_MISS, result={})
-
     if session.query(Player).filter_by(id=request.token).count() < 1:
         player = Player(id=request.token, attempt_n=0)
         session.add(player)
@@ -107,11 +105,17 @@ def check_word(request: AttemptRequest):
         player = session.query(Player).filter_by(id=request.token).first()
 
     if player:
-        print(f"PLAYER TOKEN: {player.id}")
-        player.attempt_n += 1
+        if player.state != 1 or player.is_finished:
+            player.state = 1
+            player.is_finished = False
+            player.attempt_n = 0
+            player.prev_tries = ""
     else:
         raise Exception("Something wrong with plyaer")
-    session.commit()
+
+    if session.query(Word).filter_by(word=request.attempt).count() < 1:
+        return AttemptResponse(current_attempt=player.attempt_n, status=STATUS_MISS,
+                               result={}, prev=player.prev_tries.split(','))
 
     today = date.today()
     if session.query(Word).filter_by(day=today).count() < 1:
@@ -154,10 +158,25 @@ def check_word(request: AttemptRequest):
     elif R_ABSENT not in result.values() and R_PRESENT not in result.values():
         status = STATUS_CORRECT
 
+    player.prev_tries = player.prev_tries + (
+            "," if player.prev_tries != "" else "") + request.attempt
     # User exceeded number of attempts
-    if player.attempt_n >= 6 and status != STATUS_CORRECT:
+    if player.attempt_n > 4 and status != STATUS_CORRECT:
         status = STATUS_LOSER
+        player.state = 3
+        player.is_finished = True
+    elif status == STATUS_CORRECT:
+        player.state = 2
+        player.is_finished = True
+
+    player.attempt_n += 1
+    print(f"PLAYER TOKEN: {player.id}")
+    print(f"Attempt: {player.attempt_n}")
+    print(f"State: {player.state} ({player.is_finished})")
+    print(f"Prev: {player.prev_tries}")
+    session.commit()
 
     return AttemptResponse(
-            current_attempt=player.attempt_n, status=status, result=result
+            current_attempt=player.attempt_n, status=status, result=result,
+            prev=player.prev_tries.split(',')
             )
