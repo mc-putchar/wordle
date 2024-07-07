@@ -129,6 +129,7 @@ button:hover {
 	background-color: #610c7a77;
 	border: cyan;
 	border-radius: 0.4rem;
+	visibility: hidden;
 }
 
 .playdate {

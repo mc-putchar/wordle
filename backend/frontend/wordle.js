@@ -136,6 +136,18 @@ async function onReturn() {
 				return;
 			}
 			const result = data.result;
+			// console.log("attempt: " + data.current_attempt);
+			// console.log("currRow: " + currentRow);
+			// if (currentRow =! data.current_attempt - 1) {
+			// 	//readjust cells
+			// 	const prev = data.prev;
+			// 	if (prev) {
+			// 		currentRow = 0;
+			// 		for (let attempt of prev) {
+
+			// 		}
+			// 	}
+			// }
 			for (let i = 0; i < 5; ++i) {
 				this.setKeyState(word[i], getKeyState(result[i]));
 			}
