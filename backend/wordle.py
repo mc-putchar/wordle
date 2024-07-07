@@ -6,16 +6,24 @@
 #    By: mcutura <mcutura@student.42berlin.de>      +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/07/06 01:06:12 by astavrop          #+#    #+#              #
-#    Updated: 2024/07/06 05:35:28 by mcutura          ###   ########.fr        #
+#    Updated: 2024/07/07 05:07:49 by mcutura          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
 
+from datetime import date
 import json
+from os.path import isfile
 from typing import Dict, List, Literal
+import os
 
 from fastapi import FastAPI
 from pydantic import BaseModel, model_validator
+from starlette.responses import FileResponse
+from sqlalchemy.orm import sessionmaker
+from sqlalchemy.sql.expression import func, select
+
+from .database import session, Word, get_todays_word, set_todays_word, fill_db
 from starlette.responses import FileResponse
 
 app = FastAPI()
@@ -27,6 +35,7 @@ STATUS_LOSER = "loser"
 R_CORRECT = "correct"
 R_PRESENT = "present"
 R_ABSENT = "absent"
+WORDS_FN = "words.txt"
 
 
 class AttemptRequest(BaseModel):
@@ -53,6 +62,17 @@ TODAYS_WORD = "abcde"
 database = {}
 
 
+@app.on_event("shutdown")
+def close_db():
+    session.close()
+
+
+@app.on_event("startup")
+def clone_words():
+    with open(WORDS_FN, "r") as file:
+        fill_db([word.replace("\n", "") for word in file.readlines()])
+
+
 @app.get("/")
 def index():
     return FileResponse("frontend/index.html")
@@ -75,24 +95,35 @@ def check_word(request: AttemptRequest):
         database[request.token] += 1
 
     # User exceeded number of attempts
-    if database[request.token] >= 5:
+    if database[request.token] > 5:
         return AttemptResponse(
             current_attempt=database[request.token], status=STATUS_LOSER, result={}
         )
 
-    correct_word = str(TODAYS_WORD)
+    today = date.today()
+    if session.query(Word).filter_by(day=today).count() < 1:
+        correct_word: Word = set_todays_word(
+            session.query(Word)
+            .filter_by(is_assigned=False)
+            .order_by(func.random())
+            .first()
+            .word
+        )
+    else:
+        correct_word: Word = get_todays_word()
+    print(correct_word.word)
     result = {}
     status: str = STATUS_LOSER
     mistakes = 0
 
-    if request.attempt == correct_word:
+    if request.attempt == correct_word.word:
         result = {i: R_CORRECT for i in range(len(request.attempt))}
         status = STATUS_CORRECT
     else:
         for index, letter in enumerate(request.attempt):
-            if letter == correct_word[index]:
+            if letter == correct_word.word[index]:
                 result[index] = R_CORRECT
-            elif letter in correct_word:
+            elif letter in correct_word.word:
                 if request.attempt.count(letter) == 1:
                     result[index] = R_PRESENT
                 else:
