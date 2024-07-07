@@ -46,6 +46,24 @@ function updateWordDisplay(result) {
 	}
 }
 
+function updateWordDisplay(result) {
+	console.log(result);
+	if (!result) {
+		console.log("No result");
+		return;
+	}
+	const board = document.getElementById("gameboard");
+	const row = board.rows[currentRow - 1];
+	for (let i = 0; i < Object.keys(result).length; ++i) {
+		if (result[Object.keys(result)[i]] == "absent")
+			row.cells[i].className = "letter-absent";
+		else if (result[Object.keys(result)[i]] == "present")
+			row.cells[i].className = "letter-present";
+		else if (result[Object.keys(result)[i]] == "correct")
+			row.cells[i].className = "letter-correct";
+	}
+}
+
 function onKeyClick() {
 	if (gameState || currentRow >= MAX_ATTEMPTS)
 		return;

@@ -100,9 +100,11 @@ body = ""
 with open("./templates/default.html", "r") as file:
     body = ''.join(e for e in file.readlines())
 
+print(body)
+
 # Send an email
 client.send_email(
-    to_address='emailhere',
+    to_address='sung-hle@student.42berlin.de',
     subject='Laws of Software',
     body=body,
     body_type='html'
