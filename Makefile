@@ -11,4 +11,5 @@ up:
 down:
 	$(DC) down
 re:
-	$(DC) --build --force-recreate
+	$(DOCKER) system prune --force
+	$(DC) up --build

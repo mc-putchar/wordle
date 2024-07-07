@@ -17,6 +17,11 @@
       <h1>Wordle</h1>
     </header>
     <main>
+      <div class="datepicker">
+        <label for="day">Day:</label>
+        <input type="date" id="day" name="day">
+        <button id="playdate" class="playdate">PLAY</button>
+      </div>
       <section class="game">
         <div id="snackbar"></div>
         <table id="gameboard" class="crt">
@@ -63,6 +68,7 @@
             <td>[ ]</td>
           </tr>
         </table>
+        <div id="reboot"><button id="resetbtn" class="reset">REBOOT</button></div>
       </section>
       <div id="keyboard" class="keyboard"></div>
     </main>

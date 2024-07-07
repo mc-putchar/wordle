@@ -1,6 +1,6 @@
 const WORD_LEN = 5;
 const MAX_ATTEMPTS = 6;
-const TOAST_DELAY = 3000;
+const TOAST_DELAY = 4000;
 
 let gameState = 0;
 let currentRow = 0;
@@ -49,12 +49,17 @@ function getKeyState(state) {
 	return '1';
 }
 
+function allowReset() {
+	const element = document.getElementById("reboot");
+	element.className = "show";
+}
+
 function updateWordDisplay(result) {
-	console.log(result);
 	if (!result) {
 		console.log("No result");
 		return;
 	}
+	console.log(result);
 	const board = document.getElementById("gameboard");
 	const row = board.rows[currentRow - 1];
 	for (let i = 0; i < Object.keys(result).length; ++i) {
@@ -132,7 +137,7 @@ async function onReturn() {
 			}
 			const result = data.result;
 			for (let i = 0; i < 5; ++i) {
-				this.setKeyState(word[i], result[i]);
+				this.setKeyState(word[i], getKeyState(result[i]));
 			}
 			this.updateKeys();
 			currentCell = 0;
@@ -140,9 +145,11 @@ async function onReturn() {
 			if (data.status === "correct") {
 				clearTimeout(toast("You won!", style = "won"));
 				gameState = 1;
+				allowReset();
 			} else if (data.status == "loser") {
 				clearTimeout(toast("You lose!", style = "lost"));
 				gameState = -1;
+				allowReset();
 			}
 			updateWordDisplay(result);
 		} else {
@@ -189,12 +196,15 @@ class Keyboard {
 			this.element.appendChild(trow);
 		});
 		document.addEventListener("keyup", event => this.onKeyUp(event));
+		const resetbtn = document.getElementById("resetbtn");
+		resetbtn.onclick = this.reset.bind(this);
 	}
 	setKeyState(key, state) {
 		for (let i = 0; i < this.keyrows.length; ++i) {
 			for (let j = 0; j < this.keyrows[i].length; ++j) {
 				if (this.keyrows[i][j] === key) {
-					this.keystates[i] = this.keystates[i].replaceAt(j, getKeyState(state));
+					if (this.keystates[i][j] == "1" || this.keystates[i][j] < state)
+						this.keystates[i] = this.keystates[i].replaceAt(j, state);
 					return;
 				}
 			}
@@ -233,6 +243,26 @@ class Keyboard {
 			document.getElementById("backspace").click();
 		else if (key === 'Enter')
 			document.getElementById("enter").click();
+	}
+	reset() {
+		this.keystates = ["1111111111s", "111111111ss", "1111111ssss"];
+		this.updateKeys();
+		const element = document.getElementById("reboot");
+		element.className = "";
+		currentRow = 0;
+		currentCell = 0;
+		const board = document.getElementById("gameboard");
+		for (let row of board.rows) {
+			for(let cell of row.cells) {
+				cell.innerText = "[ ]";
+				cell.className = "";
+			}
+		}
+		gameState = 0;
+		const bar = document.getElementById("snackbar");
+		bar.textContent = "";
+		bar.className = "";
+		localStorage.removeItem("uniqueToken");
 	}
 };
 

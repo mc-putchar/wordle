@@ -2,7 +2,7 @@
 	image-rendering: pixelated;
 }
 
-body, h1, h2, h3, h4, h5, h6, p, ul, li, table {
+body, h1, h2, h3, h4, h5, h6, p, ul, li, table, label {
 	margin: 0;
 	padding: 0;
 	box-sizing: border-box;
@@ -15,7 +15,7 @@ body {
 	background-position: center top;
 	background-size: cover;
 	background-color: #1a1a1a;
-	color: #e0e0e0;
+	color: cyan;
 	display: flex;
 	flex-direction: column;
 	align-items: center;
@@ -42,13 +42,18 @@ table {
 	max-width: 600px;
 }
 
+label {
+	color: cyan;
+	font-size: large;
+}
+
 td {
 	color: cyan;
 	padding: 0.05rem;
 }
 .letter-absent {
 	color: #424242;
-	-webkit-text-stroke-color: cyan;
+	-webkit-text-stroke-color: #4242ee;
 	-webkit-text-stroke-width: 1px;
 }
 .letter-present {
@@ -120,6 +125,22 @@ button:hover {
 	-webkit-text-stroke-width: 1px;
 }
 
+.datepicker {
+	background-color: #610c7a77;
+	border: cyan;
+	border-radius: 0.4rem;
+}
+
+.playdate {
+	color: cyan;
+	background-color: #610c7aff;
+	border: cyan;
+	border-radius: 0.4rem;
+	font-size: large;
+	padding: 0.5rem;
+	margin: 0.5rem;
+}
+
 .game {
 	font-family: 'Silkscreen', sans-serif;
 	font-size: xx-large;
@@ -166,7 +187,8 @@ button:hover {
 	position: absolute;
 	margin: 0 auto;
 	background-color: #61d4f79a;
-	color: #fff;
+	color: #01531c;
+	font-size: large;
 	text-align: center;
 	border-radius: 0.01rem;
 	padding: 0.1rem;
@@ -212,6 +234,30 @@ button:hover {
 @keyframes fadeout {
 	from {top: 0.15rem; opacity: 1;}
 	to {top: 0; opacity: 0;}
+}
+
+#reboot {
+	visibility: hidden;
+	position: absolute;
+}
+#reboot.show {
+	visibility: visible;
+	position: relative;
+	-webkit-animation: fadein 0.5s, fadeout 0.5s 2.5s;
+	animation: fadein 0.5s, fadeout 0.5s 3.5s;
+}
+
+.reset {
+	max-width: fit-content;
+	background-color: #33cc3388;
+	border: cyan;
+	font-size: 24px;
+	padding-top: 0rem;
+	padding-bottom: 0.1rem;
+	-webkit-text-stroke-color: #4242ee;
+	-webkit-text-stroke-width: 1px;
+	-webkit-animation: fadein 0.5s, fadeout 0.5s 2.5s;
+	animation: fadein 0.5s, fadeout 0.5s 2.5s;
 }
 
 @keyframes flicker {
