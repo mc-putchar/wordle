@@ -6,7 +6,7 @@
 #    By: astavrop <astavrop@student.42berlin.de>    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/07/06 20:21:17 by astavrop          #+#    #+#              #
-#    Updated: 2024/07/07 20:20:54 by astavrop         ###   ########.fr        #
+#    Updated: 2024/07/07 22:08:25 by astavrop         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -43,6 +43,10 @@ class Player(Base):
     # UUID recieved from frontend
     id = Column(String, primary_key=True)
     attempt_n = Column(Integer, default=0, nullable=False)
+    is_finished = Column(Boolean, default=False)
+    # 1 - playing, 2 - won, 3 - lost
+    state = Column(Integer, default=1)
+    prev_tries = Column(String, default="")
 
     def __init__(self, id, attempt_n=0) -> None:
         self.id = id
