@@ -1,10 +1,18 @@
 const WORD_LEN = 5;
+const TOAST_DELAY = 5000;
 const user_token = "blabla"
 let currentRow = 0;
 let currentCell = 0;
 
 String.prototype.replaceAt = function(index, replacement) {
 	return this.substring(0, index) + replacement + this.substring(index + replacement.length);
+}
+
+function toast(message) {
+	const bar = document.getElementById("snackbar");
+	bar.textContent = message;
+	bar.className = "show";
+	setTimeout(function() { bar.className = ""; }, TOAST_DELAY);
 }
 
 function getKeyState(state) {
@@ -54,7 +62,7 @@ function onDelete() {
 async function onReturn() {
 	let word = "";
 	if (currentCell < WORD_LEN) {
-		alert("Not enough letters.");
+		toast("Not enough letters.");
 	} else {
 		const board = document.getElementById("gameboard");
 		for (let i = 0; i < WORD_LEN; ++i) {
@@ -70,20 +78,16 @@ async function onReturn() {
 		});
 		const data = await response.json();
 		const result = data.result;
+		for (let i = 0; i < 5; ++i) {
+			this.setKeyState(word[i], result[i]);
+		}
+		this.updateKeys();
+		currentCell = 0;
+		++currentRow;
 		if (data.status === "correct") {
-			alert("WINNER");
+			toast("You won!");
 		} else if (data.status == "loser") {
-			alert("LOSER");
-		} else {
-			for (let i = 0; i < 5; ++i) {
-				this.setKeyState(word[i], result[i]);
-			}
-			this.updateKeys();
-			currentCell = 0;
-			++currentRow;
-			if (currentRow > 5) {
-				// LOSE!
-			}
+			toast("You lose!");
 		}
 		updateWordDisplay(result);
 	}
@@ -165,16 +169,12 @@ class Keyboard {
 	}
 	onKeyUp(event) {
 		const key = event.key;
-		if (key.length === 1 && /[a-zA-Z]/.test(key)) {
-			console.log(`Letter pressed: ${key}`);
-			document.getElementById(key).click();
-		} else if (key === 'Backspace') {
-			console.log('Backspace pressed');
+		if (key.length === 1 && /[a-zA-Z]/.test(key))
+			document.getElementById(key.toLowerCase()).click();
+		else if (key === 'Backspace')
 			document.getElementById("backspace").click();
-		} else if (key === 'Enter') {
-			console.log('Enter pressed');
+		else if (key === 'Enter')
 			document.getElementById("enter").click();
-		}
 	}
 };
 
