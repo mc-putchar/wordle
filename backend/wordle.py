@@ -6,7 +6,7 @@
 #    By: mcutura <mcutura@student.42berlin.de>      +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/07/06 01:06:12 by astavrop          #+#    #+#              #
-#    Updated: 2024/07/07 06:16:43 by mcutura          ###   ########.fr        #
+#    Updated: 2024/07/07 15:12:07 by astavrop         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -32,6 +32,7 @@ app = FastAPI()
 STATUS_CORRECT = "correct"
 STATUS_INCOMPLETE = "incomplete"
 STATUS_LOSER = "loser"
+STATUS_MISS = "missing"
 R_CORRECT = "correct"
 R_PRESENT = "present"
 R_ABSENT = "absent"
@@ -52,7 +53,7 @@ class AttemptRequest(BaseModel):
 
 class AttemptResponse(BaseModel):
     current_attempt: int
-    status: Literal[STATUS_LOSER, STATUS_INCOMPLETE, STATUS_CORRECT]
+    status: Literal[STATUS_MISS, STATUS_LOSER, STATUS_INCOMPLETE, STATUS_CORRECT]
     result: Dict[int, Literal[R_ABSENT, R_PRESENT, R_CORRECT]]
 
 
@@ -69,8 +70,9 @@ def close_db():
 
 @app.on_event("startup")
 def clone_words():
-    with open(WORDS_FN, "r") as file:
-        fill_db([word.replace("\n", "") for word in file.readlines()])
+    if not os.path.exists("wordle.db"):
+        with open(WORDS_FN, "r") as file:
+            fill_db([word.replace("\n", "") for word in file.readlines()])
 
 
 @app.get("/")
@@ -92,16 +94,15 @@ def wallpaper():
 
 @app.post("/word/")
 def check_word(request: AttemptRequest):
+#    if session.query(Word).filter_by(word=request.attempt).count() < 1:
+#        return AttemptResponse(
+#            current_attempt=0, status=STATUS_MISS, result={}
+#            )
+
     if request.token not in database.keys():
         database[request.token] = 1
     else:
         database[request.token] += 1
-
-    # User exceeded number of attempts
-    if database[request.token] > 5:
-        return AttemptResponse(
-            current_attempt=database[request.token], status=STATUS_LOSER, result={}
-        )
 
     today = date.today()
     if session.query(Word).filter_by(day=today).count() < 1:
@@ -138,6 +139,10 @@ def check_word(request: AttemptRequest):
 
         if mistakes > 0 and status != STATUS_INCOMPLETE:
             status = STATUS_INCOMPLETE
+
+    # User exceeded number of attempts
+    if database[request.token] > 5:
+        status = STATUS_LOSER
 
     return AttemptResponse(
         current_attempt=database[request.token], status=status, result=result
