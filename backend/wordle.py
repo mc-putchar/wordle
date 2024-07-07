@@ -6,7 +6,7 @@
 #    By: mcutura <mcutura@student.42berlin.de>      +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/07/06 01:06:12 by astavrop          #+#    #+#              #
-#    Updated: 2024/07/07 15:12:07 by astavrop         ###   ########.fr        #
+#    Updated: 2024/07/07 17:11:14 by astavrop         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -16,6 +16,7 @@ import json
 from os.path import isfile
 from typing import Dict, List, Literal
 import os
+from collections import Counter
 
 from fastapi import FastAPI
 from pydantic import BaseModel, model_validator
@@ -78,15 +79,23 @@ def clone_words():
 @app.get("/")
 def index():
     return FileResponse("frontend/index.html")
+
+
 @app.get("/style.css")
 def style():
     return FileResponse("frontend/style.css")
+
+
 @app.get("/wordle.js")
 def script():
     return FileResponse("frontend/wordle.js")
+
+
 @app.get("/favicon.ico")
 def favicon():
     return FileResponse("frontend/favicon.ico")
+
+
 @app.get("/wallpaper.jpg")
 def wallpaper():
     return FileResponse("frontend/wallpaper.jpg")
@@ -94,10 +103,8 @@ def wallpaper():
 
 @app.post("/word/")
 def check_word(request: AttemptRequest):
-#    if session.query(Word).filter_by(word=request.attempt).count() < 1:
-#        return AttemptResponse(
-#            current_attempt=0, status=STATUS_MISS, result={}
-#            )
+    if session.query(Word).filter_by(word=request.attempt).count() < 1:
+        return AttemptResponse(current_attempt=0, status=STATUS_MISS, result={})
 
     if request.token not in database.keys():
         database[request.token] = 1
@@ -116,29 +123,29 @@ def check_word(request: AttemptRequest):
     else:
         correct_word: Word = get_todays_word()
     print(correct_word.word)
-    result = {}
     status: str = STATUS_LOSER
-    mistakes = 0
 
     if request.attempt == correct_word.word:
         result = {i: R_CORRECT for i in range(len(request.attempt))}
         status = STATUS_CORRECT
     else:
-        for index, letter in enumerate(request.attempt):
-            if letter == correct_word.word[index]:
-                result[index] = R_CORRECT
-            elif letter in correct_word.word:
-                if request.attempt.count(letter) == 1:
-                    result[index] = R_PRESENT
-                else:
-                    result[index] = R_ABSENT
-                mistakes += 1
+        counts = dict(Counter(correct_word.word))
+        result = []
+        for i in range(len(request.attempt)):
+            if request.attempt[i] == correct_word.word[i]:
+                result.append(R_CORRECT)
+                counts[request.attempt[i]] -= 1
             else:
-                result[index] = R_ABSENT
-                mistakes += 1
-
-        if mistakes > 0 and status != STATUS_INCOMPLETE:
-            status = STATUS_INCOMPLETE
+                result.append(R_ABSENT)
+        for i in range(len(request.attempt)):
+            if (
+                request.attempt[i] in correct_word.word
+                and counts[request.attempt[i]] > 0
+                and result[i] == R_ABSENT
+            ):
+                result[i] = R_PRESENT
+                counts[request.attempt[i]] -= 1
+        result = {i: result[i] for i in range(len(result))}
 
     # User exceeded number of attempts
     if database[request.token] > 5:
