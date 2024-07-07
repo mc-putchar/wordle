@@ -1,7 +1,6 @@
 const WORD_LEN = 5;
 const MAX_ATTEMPTS = 6;
 const TOAST_DELAY = 3000;
-const user_token = "blabla"
 
 let gameState = 0;
 let currentRow = 0;
@@ -11,11 +10,33 @@ String.prototype.replaceAt = function(index, replacement) {
 	return this.substring(0, index) + replacement + this.substring(index + replacement.length);
 }
 
-function toast(message, delay = TOAST_DELAY) {
+function toast(message, style = "show", delay = TOAST_DELAY) {
 	const bar = document.getElementById("snackbar");
 	bar.textContent = message;
-	bar.className = "show";
+	bar.className = style;
 	return (setTimeout(function() { bar.className = ""; }, delay));
+}
+
+function generateUUID() {
+	const cryptoObj = window.crypto || window.msCrypto; // for IE 11
+	const array = new Uint8Array(16);
+	cryptoObj.getRandomValues(array);
+
+	// Transform to UUID format
+	array[6] = (array[6] & 0x0f) | 0x40;
+	array[8] = (array[8] & 0x3f) | 0x80;
+
+	const uuid = [...array].map((b, i) => (i === 4 || i === 6 || i === 8 || i === 10 ? '-' : '') + b.toString(16).padStart(2, '0')).join('');
+	return uuid;
+}
+
+function getToken() {
+	let uniqueToken = localStorage.getItem("uniqueToken");
+	if (!uniqueToken) {
+		uniqueToken = generateUUID();
+		localStorage.setItem("uniqueToken", uniqueToken);
+	}
+	return uniqueToken;
 }
 
 function getKeyState(state) {
@@ -101,28 +122,32 @@ async function onReturn() {
 				'Content-Type': 'application/json'
 			},
 			method: "POST",
-			body: JSON.stringify({token: user_token, attempt: word})
+			body: JSON.stringify({token: getToken(), attempt: word})
 		});
-		const data = await response.json();
-		if (data.status == "missing") {
-			toast("Not in word list");
-			return;
+		if (response.ok) {
+			const data = await response.json();
+			if (data.status == "missing") {
+				toast("Not in word list");
+				return;
+			}
+			const result = data.result;
+			for (let i = 0; i < 5; ++i) {
+				this.setKeyState(word[i], result[i]);
+			}
+			this.updateKeys();
+			currentCell = 0;
+			++currentRow;
+			if (data.status === "correct") {
+				clearTimeout(toast("You won!", style = "won"));
+				gameState = 1;
+			} else if (data.status == "loser") {
+				clearTimeout(toast("You lose!", style = "lost"));
+				gameState = -1;
+			}
+			updateWordDisplay(result);
+		} else {
+			console.error("POST request failed");
 		}
-		const result = data.result;
-		for (let i = 0; i < 5; ++i) {
-			this.setKeyState(word[i], result[i]);
-		}
-		this.updateKeys();
-		currentCell = 0;
-		++currentRow;
-		if (data.status === "correct") {
-			clearTimeout(toast("You won!"));
-			gameState = 1;
-		} else if (data.status == "loser") {
-			clearTimeout(toast("You lose!"));
-			gameState = 1;
-		}
-		updateWordDisplay(result);
 	}
 }
 
