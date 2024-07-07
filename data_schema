@@ -8,7 +8,7 @@ POST /word
 REPLY:
 {
 	"currentAttempt": 1,
-	"status": "loser" | "incomplete" | "correct",
+	"status": "missing" | "loser" | "incomplete" | "correct",
 	"result": {
 		0: "absent",
 		1: "correct",
