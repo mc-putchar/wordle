@@ -1,6 +1,9 @@
 const WORD_LEN = 5;
-const TOAST_DELAY = 5000;
+const MAX_ATTEMPTS = 6;
+const TOAST_DELAY = 3000;
 const user_token = "blabla"
+
+let gameState = 0;
 let currentRow = 0;
 let currentCell = 0;
 
@@ -8,11 +11,11 @@ String.prototype.replaceAt = function(index, replacement) {
 	return this.substring(0, index) + replacement + this.substring(index + replacement.length);
 }
 
-function toast(message) {
+function toast(message, delay = TOAST_DELAY) {
 	const bar = document.getElementById("snackbar");
 	bar.textContent = message;
 	bar.className = "show";
-	setTimeout(function() { bar.className = ""; }, TOAST_DELAY);
+	setTimeout(function() { bar.className = ""; }, delay);
 }
 
 function getKeyState(state) {
@@ -44,6 +47,8 @@ function updateWordDisplay(result) {
 }
 
 function onKeyClick() {
+	if (gameState || currentRow >= MAX_ATTEMPTS)
+		return;
 	if (currentCell < WORD_LEN) {
 		const board = document.getElementById("gameboard");
 		board.rows[currentRow].cells[currentCell].textContent = "[" + this.textContent + "]";
@@ -52,6 +57,8 @@ function onKeyClick() {
 }
 
 function onDelete() {
+	if (gameState || currentRow >= MAX_ATTEMPTS)
+		return;
 	const board = document.getElementById("gameboard");
 	if (currentCell > 0) {
 		--currentCell;
@@ -60,6 +67,8 @@ function onDelete() {
 }
 
 async function onReturn() {
+	if (gameState || currentRow >= MAX_ATTEMPTS)
+		return;
 	let word = "";
 	if (currentCell < WORD_LEN) {
 		toast("Not enough letters.");
@@ -77,6 +86,10 @@ async function onReturn() {
 			body: JSON.stringify({token: user_token, attempt: word})
 		});
 		const data = await response.json();
+		if (data.status == "missing") {
+			toast("Not in word list");
+			return;
+		}
 		const result = data.result;
 		for (let i = 0; i < 5; ++i) {
 			this.setKeyState(word[i], result[i]);
@@ -86,8 +99,10 @@ async function onReturn() {
 		++currentRow;
 		if (data.status === "correct") {
 			toast("You won!");
+			gameState = 1;
 		} else if (data.status == "loser") {
 			toast("You lose!");
+			gameState = 1;
 		}
 		updateWordDisplay(result);
 	}
