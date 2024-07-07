@@ -6,7 +6,7 @@
 #    By: astavrop <astavrop@student.42berlin.de>    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/07/06 20:21:17 by astavrop          #+#    #+#              #
-#    Updated: 2024/07/06 22:15:03 by astavrop         ###   ########.fr        #
+#    Updated: 2024/07/07 20:20:54 by astavrop         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -16,7 +16,7 @@ import sqlalchemy
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
 
-SQLA_DB_URL = "sqlite:///./words.db"
+SQLA_DB_URL = "sqlite:///./wordle.db"
 
 engine = create_engine(
         SQLA_DB_URL, connect_args={"check_same_thread": False}
@@ -37,9 +37,21 @@ class Word(Base):
         self.day = day
 
 
+class Player(Base):
+    __tablename__ = "players"
+
+    # UUID recieved from frontend
+    id = Column(String, primary_key=True)
+    attempt_n = Column(Integer, default=0, nullable=False)
+
+    def __init__(self, id, attempt_n=0) -> None:
+        self.id = id
+        self.attempt_n = attempt_n
+
+
 Base.metadata.create_all(engine)
 
-SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
+SessionLocal = sessionmaker(bind=engine)
 session = SessionLocal()
 
 def get_todays_word():
@@ -64,11 +76,11 @@ def set_todays_word(word: str):
 def fill_db(words: list[str]):
     if not words:
         raise Exception("No words to put into database")
-    print(f"Loading words {len(words)}")
+    print(f"Loading {len(words)} words")
     for word in words:
         if session.query(Word).filter_by(word=word.strip()).count() < 1:
             print(f":: {word}             ", end="\r")
             new_word = Word(word=word.strip(), is_assigned=False)
             session.add(new_word)
-    print()
+    print(" "*10)
     session.commit()
