@@ -1,20 +1,20 @@
-Word: 
-lords
 
 POST /word
 {
-"token": "asdkjashgkdjasg",
-"attempt": "wordl"
+	"token": "example-token",
+	"attempt": "wordl"
 }
 
 REPLY:
 {
-"currentAttempt": 1,
-"status": "loser" | "incomplete" | "correct",
-"0": "absent",
-"1": "correct",
-"2": "correct",
-"3": "correct",
-"4": "present"
+	"currentAttempt": 1,
+	"status": "missing" | "loser" | "incomplete" | "correct",
+	"result": {
+		0: "absent",
+		1: "correct",
+		2: "correct",
+		3: "correct",
+		4: "present"
+	}
 }
 
