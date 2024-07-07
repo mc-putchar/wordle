@@ -11,6 +11,8 @@ body, h1, h2, h3, h4, h5, h6, p, ul, li, table {
 body {
 	font-family: 'Press Start 2P', system-ui;
 	background-image: url('wallpaper.jpg');
+	background-repeat: no-repeat;
+	background-position: center top; 
 	background-color: #1a1a1a;
 	color: #e0e0e0;
 	display: flex;
@@ -20,10 +22,10 @@ body {
 	align-items: center;
 	justify-content: center;
 	min-height: 100vh;
-	padding: 10px;
+	padding: 0.05rem;
 	text-align: center;
 	min-height: 100vh;
-	padding: 10px;
+	padding: 0.05rem;
 	text-align: center;
 }
 
@@ -35,14 +37,14 @@ header {
 /* Style the table and buttons */
 table {
 	border-collapse: collapse;
-	margin-top: 20px;
+	margin-top: 0.1rem;
 	width: 100%; /* Ensure table width is 100% */
 	max-width: 600px; /* Max width for larger screens */
 }
 
 td {
 	color: cyan;
-	padding: 5px;
+	padding: 0.05rem;
 }
 .letter-absent {
 	color: #666;
@@ -56,8 +58,8 @@ td {
 
 button {
 	width: 100%; /* Buttons take full width of cell */
-	height: 50px;
-	max-width: 50px; /* Max width for larger screens */
+	height: 2rem;
+	max-width: 2rem; /* Max width for larger screens */
 	border: 2px solid #000;
 	background-color: #d3d3d3; /* Default button color */
 	color: #000;
@@ -97,13 +99,13 @@ button:hover {
 /* Additional retro elements */
 .header {
 	font-size: 24px;
-	margin: 20px 0;
+	margin: 0.1rem 0;
 	text-align: center;
 	color: #ffcc00;
 }
 
 .footer {
-	margin-top: 20px;
+	margin-top: 2rem;
 	font-size: 14px;
 	text-align: center;
 	color: #c01fff;
@@ -155,37 +157,36 @@ button:hover {
 }
 #snackbar {
 	visibility: hidden;
-	min-width: 250px;
-	margin-left: -125px;
+	position: absolute;
+	margin: 0 auto;
 	background-color: #61d4f79a;
 	color: #fff;
 	text-align: center;
-	border-radius: 2px;
-	padding: 16px;
-	position: fixed;
+	border-radius: 0.01rem;
+	padding: 0.1rem;
 	z-index: 1;
-	left: 50%;
-	top: 30px;
+	top: 0.15rem;
 }
 #snackbar.show {
 	visibility: visible;
+	position: relative;
 	-webkit-animation: fadein 0.5s, fadeout 0.5s 2.5s;
 	animation: fadein 0.5s, fadeout 0.5s 2.5s;
 }
 @-webkit-keyframes fadein {
 	from {top: 0; opacity: 0;}
-	to {top: 30px; opacity: 1;}
+	to {top: 0.15rem; opacity: 1;}
 }
 @keyframes fadein {
 	from {top: 0; opacity: 0;}
-	to {top: 30px; opacity: 1;}
+	to {top: 0.15rem; opacity: 1;}
 }
 @-webkit-keyframes fadeout {
-	from {top: 30px; opacity: 1;}
+	from {top: 0.15rem; opacity: 1;}
 	to {top: 0; opacity: 0;}
 }
 @keyframes fadeout {
-	from {top: 30px; opacity: 1;}
+	from {top: 0.15rem; opacity: 1;}
 	to {top: 0; opacity: 0;}
 }
 

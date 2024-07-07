@@ -15,7 +15,7 @@ function toast(message, delay = TOAST_DELAY) {
 	const bar = document.getElementById("snackbar");
 	bar.textContent = message;
 	bar.className = "show";
-	setTimeout(function() { bar.className = ""; }, delay);
+	return (setTimeout(function() { bar.className = ""; }, delay));
 }
 
 function getKeyState(state) {
@@ -116,10 +116,10 @@ async function onReturn() {
 		currentCell = 0;
 		++currentRow;
 		if (data.status === "correct") {
-			toast("You won!");
+			clearTimeout(toast("You won!"));
 			gameState = 1;
 		} else if (data.status == "loser") {
-			toast("You lose!");
+			clearTimeout(toast("You lose!"));
 			gameState = 1;
 		}
 		updateWordDisplay(result);
