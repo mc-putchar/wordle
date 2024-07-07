@@ -40,11 +40,14 @@ table {
 	margin-top: 0.1rem;
 	width: 100%;
 	max-width: 600px;
+<<<<<<< HEAD
 }
 
 label {
 	color: cyan;
 	font-size: large;
+=======
+>>>>>>> origin/dev
 }
 
 td {
@@ -53,7 +56,11 @@ td {
 }
 .letter-absent {
 	color: #424242;
+<<<<<<< HEAD
 	-webkit-text-stroke-color: #4242ee;
+=======
+	-webkit-text-stroke-color: cyan;
+>>>>>>> origin/dev
 	-webkit-text-stroke-width: 1px;
 }
 .letter-present {
@@ -123,6 +130,7 @@ button:hover {
 	font-weight: bold;
 	-webkit-text-stroke-color: cyan;
 	-webkit-text-stroke-width: 1px;
+<<<<<<< HEAD
 }
 
 .datepicker {
@@ -140,6 +148,8 @@ button:hover {
 	font-size: large;
 	padding: 0.5rem;
 	margin: 0.5rem;
+=======
+>>>>>>> origin/dev
 }
 
 .game {
@@ -188,8 +198,12 @@ button:hover {
 	position: absolute;
 	margin: 0 auto;
 	background-color: #61d4f79a;
+<<<<<<< HEAD
 	color: #01531c;
 	font-size: large;
+=======
+	color: #fff;
+>>>>>>> origin/dev
 	text-align: center;
 	border-radius: 0.01rem;
 	padding: 0.1rem;
@@ -237,6 +251,7 @@ button:hover {
 	to {top: 0; opacity: 0;}
 }
 
+<<<<<<< HEAD
 #reboot {
 	visibility: hidden;
 	position: absolute;
@@ -261,6 +276,8 @@ button:hover {
 	animation: fadein 0.5s, fadeout 0.5s 2.5s;
 }
 
+=======
+>>>>>>> origin/dev
 @keyframes flicker {
 	0% {
 	  opacity: 0.27861;
