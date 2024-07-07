@@ -1,10 +1,21 @@
 const WORD_LEN = 5;
+const MAX_ATTEMPTS = 6;
+const TOAST_DELAY = 3000;
 const user_token = "blabla"
+
+let gameState = 0;
 let currentRow = 0;
 let currentCell = 0;
 
 String.prototype.replaceAt = function(index, replacement) {
 	return this.substring(0, index) + replacement + this.substring(index + replacement.length);
+}
+
+function toast(message, delay = TOAST_DELAY) {
+	const bar = document.getElementById("snackbar");
+	bar.textContent = message;
+	bar.className = "show";
+	return (setTimeout(function() { bar.className = ""; }, delay));
 }
 
 function getKeyState(state) {
@@ -35,7 +46,27 @@ function updateWordDisplay(result) {
 	}
 }
 
+function updateWordDisplay(result) {
+	console.log(result);
+	if (!result) {
+		console.log("No result");
+		return;
+	}
+	const board = document.getElementById("gameboard");
+	const row = board.rows[currentRow - 1];
+	for (let i = 0; i < Object.keys(result).length; ++i) {
+		if (result[Object.keys(result)[i]] == "absent")
+			row.cells[i].className = "letter-absent";
+		else if (result[Object.keys(result)[i]] == "present")
+			row.cells[i].className = "letter-present";
+		else if (result[Object.keys(result)[i]] == "correct")
+			row.cells[i].className = "letter-correct";
+	}
+}
+
 function onKeyClick() {
+	if (gameState || currentRow >= MAX_ATTEMPTS)
+		return;
 	if (currentCell < WORD_LEN) {
 		const board = document.getElementById("gameboard");
 		board.rows[currentRow].cells[currentCell].textContent = "[" + this.textContent + "]";
@@ -44,6 +75,8 @@ function onKeyClick() {
 }
 
 function onDelete() {
+	if (gameState || currentRow >= MAX_ATTEMPTS)
+		return;
 	const board = document.getElementById("gameboard");
 	if (currentCell > 0) {
 		--currentCell;
@@ -52,9 +85,11 @@ function onDelete() {
 }
 
 async function onReturn() {
+	if (gameState || currentRow >= MAX_ATTEMPTS)
+		return;
 	let word = "";
 	if (currentCell < WORD_LEN) {
-		alert("Not enough letters.");
+		toast("Not enough letters.");
 	} else {
 		const board = document.getElementById("gameboard");
 		for (let i = 0; i < WORD_LEN; ++i) {
@@ -69,21 +104,23 @@ async function onReturn() {
 			body: JSON.stringify({token: user_token, attempt: word})
 		});
 		const data = await response.json();
+		if (data.status == "missing") {
+			toast("Not in word list");
+			return;
+		}
 		const result = data.result;
+		for (let i = 0; i < 5; ++i) {
+			this.setKeyState(word[i], result[i]);
+		}
+		this.updateKeys();
+		currentCell = 0;
+		++currentRow;
 		if (data.status === "correct") {
-			alert("WINNER");
+			clearTimeout(toast("You won!"));
+			gameState = 1;
 		} else if (data.status == "loser") {
-			alert("LOSER");
-		} else {
-			for (let i = 0; i < 5; ++i) {
-				this.setKeyState(word[i], result[i]);
-			}
-			this.updateKeys();
-			currentCell = 0;
-			++currentRow;
-			if (currentRow > 5) {
-				// LOSE!
-			}
+			clearTimeout(toast("You lose!"));
+			gameState = 1;
 		}
 		updateWordDisplay(result);
 	}
@@ -165,16 +202,12 @@ class Keyboard {
 	}
 	onKeyUp(event) {
 		const key = event.key;
-		if (key.length === 1 && /[a-zA-Z]/.test(key)) {
-			console.log(`Letter pressed: ${key}`);
-			document.getElementById(key).click();
-		} else if (key === 'Backspace') {
-			console.log('Backspace pressed');
+		if (key.length === 1 && /[a-zA-Z]/.test(key))
+			document.getElementById(key.toLowerCase()).click();
+		else if (key === 'Backspace')
 			document.getElementById("backspace").click();
-		} else if (key === 'Enter') {
-			console.log('Enter pressed');
+		else if (key === 'Enter')
 			document.getElementById("enter").click();
-		}
 	}
 };
 
