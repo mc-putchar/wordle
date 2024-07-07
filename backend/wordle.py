@@ -6,7 +6,7 @@
 #    By: mcutura <mcutura@student.42berlin.de>      +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/07/06 01:06:12 by astavrop          #+#    #+#              #
-#    Updated: 2024/07/07 18:51:23 by mcutura          ###   ########.fr        #
+#    Updated: 2024/07/07 20:29:49 by astavrop         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -24,7 +24,7 @@ from starlette.responses import FileResponse
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy.sql.expression import func, select
 
-from .database import session, Word, get_todays_word, set_todays_word, fill_db
+from .database import Player, session, Word, get_todays_word, set_todays_word, fill_db
 from starlette.responses import FileResponse
 
 app = FastAPI()
@@ -58,12 +58,6 @@ class AttemptResponse(BaseModel):
     result: Dict[int, Literal[R_ABSENT, R_PRESENT, R_CORRECT]]
 
 
-TODAYS_WORD = "abcde"
-
-
-database = {}
-
-
 @app.on_event("shutdown")
 def close_db():
     session.close()
@@ -71,7 +65,8 @@ def close_db():
 
 @app.on_event("startup")
 def clone_words():
-    if not os.path.exists("wordle.db"):
+    if True: #not os.path.isfile("./wordle.db"):
+        print("Database doesn't exist. Create new one.")
         with open(WORDS_FN, "r") as file:
             fill_db([word.replace("\n", "") for word in file.readlines()])
 
@@ -105,20 +100,28 @@ def check_word(request: AttemptRequest):
     if session.query(Word).filter_by(word=request.attempt).count() < 1:
         return AttemptResponse(current_attempt=0, status=STATUS_MISS, result={})
 
-    if request.token not in database.keys():
-        database[request.token] = 1
+    if session.query(Player).filter_by(id=request.token).count() < 1:
+        player = Player(id=request.token, attempt_n=0)
+        session.add(player)
     else:
-        database[request.token] += 1
+        player = session.query(Player).filter_by(id=request.token).first()
+
+    if player:
+        print(f"PLAYER TOKEN: {player.id}")
+        player.attempt_n += 1
+    else:
+        raise Exception("Something wrong with plyaer")
+    session.commit()
 
     today = date.today()
     if session.query(Word).filter_by(day=today).count() < 1:
         correct_word: Word = set_todays_word(
-            session.query(Word)
-            .filter_by(is_assigned=False)
-            .order_by(func.random())
-            .first()
-            .word
-        )
+                session.query(Word)
+                .filter_by(is_assigned=False)
+                .order_by(func.random())
+                .first()
+                .word
+                )
     else:
         correct_word: Word = get_todays_word()
     print(correct_word.word)
@@ -138,10 +141,10 @@ def check_word(request: AttemptRequest):
                 result.append(R_ABSENT)
         for i in range(len(request.attempt)):
             if (
-                request.attempt[i] in correct_word.word
-                and counts[request.attempt[i]] > 0
-                and result[i] == R_ABSENT
-            ):
+                    request.attempt[i] in correct_word.word
+                    and counts[request.attempt[i]] > 0
+                    and result[i] == R_ABSENT
+                    ):
                 result[i] = R_PRESENT
                 counts[request.attempt[i]] -= 1
         result = {i: result[i] for i in range(len(result))}
@@ -152,9 +155,9 @@ def check_word(request: AttemptRequest):
         status = STATUS_CORRECT
 
     # User exceeded number of attempts
-    if database[request.token] >= 6 and status != STATUS_CORRECT:
+    if player.attempt_n >= 6 and status != STATUS_CORRECT:
         status = STATUS_LOSER
 
     return AttemptResponse(
-        current_attempt=database[request.token], status=status, result=result
-    )
+            current_attempt=player.attempt_n, status=status, result=result
+            )
