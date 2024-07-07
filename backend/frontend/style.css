@@ -10,9 +10,10 @@ body, h1, h2, h3, h4, h5, h6, p, ul, li, table {
 
 body {
 	font-family: 'Press Start 2P', system-ui;
-	background-image: url('wallpaper.jpg');
+	background-image: url('wallpaper.gif');
 	background-repeat: no-repeat;
-	background-position: center top; 
+	background-position: center top;
+	background-size: cover;
 	background-color: #1a1a1a;
 	color: #e0e0e0;
 	display: flex;
@@ -34,12 +35,11 @@ header {
 	font-size: xx-large;
 }
 
-/* Style the table and buttons */
 table {
 	border-collapse: collapse;
 	margin-top: 0.1rem;
-	width: 100%; /* Ensure table width is 100% */
-	max-width: 600px; /* Max width for larger screens */
+	width: 100%;
+	max-width: 600px;
 }
 
 td {
@@ -47,13 +47,19 @@ td {
 	padding: 0.05rem;
 }
 .letter-absent {
-	color: #666;
+	color: #424242;
+	-webkit-text-stroke-color: cyan;
+	-webkit-text-stroke-width: 1px;
 }
 .letter-present {
 	color: #ffcc00;
+	-webkit-text-stroke-color: orangered;
+	-webkit-text-stroke-width: 1px;
 }
 .letter-correct {
 	color: #33cc33;
+	-webkit-text-stroke-color: #42aa42;
+	-webkit-text-stroke-width: 1px;
 }
 
 button {
@@ -91,12 +97,10 @@ button {
 	color: #fff;
 }
 
-/* Add some extra styling for buttons on hover */
 button:hover {
 	opacity: 0.8;
 }
 
-/* Additional retro elements */
 .header {
 	font-size: 24px;
 	margin: 0.1rem 0;
@@ -118,7 +122,7 @@ button:hover {
 	font-family: 'Silkscreen', sans-serif;
 	font-size: xx-large;
 	color: green;
-	background-color: rgba(142, 42, 142, 0.3);
+	background-color: rgba(142, 142, 142, 0.5);
 	border-top: 5px solid green;
 	border-bottom: 5px solid green;
 }
@@ -135,8 +139,8 @@ button:hover {
 }
 
 #enter {
-	width: 3em;
-	margin-left: 1em;
+	min-width: 3rem;
+	margin-left: 1rem;
 	background-color: #2d88fffd;
 }
 #enter:hover {
@@ -144,8 +148,8 @@ button:hover {
 }
 
 #backspace {
-	width: 2.5em;
-	margin-left: 1em;
+	min-width: 3rem;
+	margin-left: 1rem;
 	background-color: rgb(245, 68, 177);
 }
 #backspace:hover {

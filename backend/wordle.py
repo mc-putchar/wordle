@@ -6,7 +6,7 @@
 #    By: mcutura <mcutura@student.42berlin.de>      +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/07/06 01:06:12 by astavrop          #+#    #+#              #
-#    Updated: 2024/07/07 18:04:11 by mcutura          ###   ########.fr        #
+#    Updated: 2024/07/07 18:51:23 by mcutura          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -95,9 +95,9 @@ def script():
 def favicon():
     return FileResponse("frontend/favicon.ico")
 
-@app.get("/wallpaper.jpg")
+@app.get("/wallpaper.gif")
 def wallpaper():
-    return FileResponse("frontend/wallpaper.jpg")
+    return FileResponse("frontend/wallpaper.gif")
 
 
 @app.post("/word/")
@@ -152,7 +152,7 @@ def check_word(request: AttemptRequest):
         status = STATUS_CORRECT
 
     # User exceeded number of attempts
-    if database[request.token] > 6:
+    if database[request.token] >= 6 and status != STATUS_CORRECT:
         status = STATUS_LOSER
 
     return AttemptResponse(
