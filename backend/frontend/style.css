@@ -109,6 +109,8 @@ button:hover {
 }
 
 .footer {
+	position: absolute;
+	bottom: 1rem;
 	margin-top: 2rem;
 	font-size: 14px;
 	text-align: center;
@@ -174,6 +176,24 @@ button:hover {
 #snackbar.show {
 	visibility: visible;
 	position: relative;
+	-webkit-animation: fadein 0.5s, fadeout 0.5s 2.5s;
+	animation: fadein 0.5s, fadeout 0.5s 2.5s;
+}
+#snackbar.won {
+	visibility: visible;
+	position: relative;
+	background-color: #33cc3388;
+	-webkit-text-stroke-color: rgb(6, 7, 7);
+	-webkit-text-stroke-width: 1px;
+	-webkit-animation: fadein 0.5s, fadeout 0.5s 2.5s;
+	animation: fadein 0.5s, fadeout 0.5s 2.5s;
+}
+#snackbar.lost {
+	visibility: visible;
+	position: relative;
+	background-color: #cc333388;
+	-webkit-text-stroke-color: rgb(6, 7, 7);
+	-webkit-text-stroke-width: 2px;
 	-webkit-animation: fadein 0.5s, fadeout 0.5s 2.5s;
 	animation: fadein 0.5s, fadeout 0.5s 2.5s;
 }
