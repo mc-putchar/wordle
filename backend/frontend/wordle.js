@@ -3,6 +3,10 @@ const user_token = "blabla"
 let currentRow = 0;
 let currentCell = 0;
 
+String.prototype.replaceAt = function(index, replacement) {
+	return this.substring(0, index) + replacement + this.substring(index + replacement.length);
+}
+
 function getKeyState(state) {
 	if (state === "absent")
 		return '0';
@@ -54,7 +58,6 @@ async function onReturn() {
 		} else {
 			const result = data.result;
 			for (let i = 0; i < 5; ++i) {
-				console.log("Result[" + i + "]: " + result[i]);
 				this.setKeyState(word[i], result[i]);
 			}
 			this.updateKeys();
@@ -72,7 +75,7 @@ class Keyboard {
 		this.element = document.createElement("table");
 		this.element.id = "key_table";
 		this.keyrows = ["qwertyuiop1", "asdfghjkl 0", "zxcvbnm    "];
-		this.keystates = ["1111111111", "111111111", "1111111"];
+		this.keystates = ["1111111111s", "111111111ss", "1111111ssss"];
 		this.keyrows.forEach(row => {
 			const trow = document.createElement("tr");
 			for (let i = 0; i < row.length; i++) {
@@ -105,18 +108,18 @@ class Keyboard {
 		});
 	}
 	setKeyState(key, state) {
-		let i = 0, j = 0;
-		for (;i < 3; ++i) {
-			for (;j < this.keyrows[i].length; ++j) {
+		for (let i = 0; i < this.keyrows.length; ++i) {
+			for (let j = 0; j < this.keyrows[i].length; ++j) {
 				if (this.keyrows[i][j] === key) {
-					this.keystates[i][j] = getKeyState(state);
+					this.keystates[i] = this.keystates[i].replaceAt(j, getKeyState(state));
 					return;
 				}
 			}
 		}
 	}
 	updateKeys() {
-		const table = document.getElementById("keyboard").firstChild;
+		const table = document.getElementById("keyboard").querySelector("table");
+		console.log(this.keystates);
 		for (let i = 0; i < 3; ++i) {
 			for (let j = 0; j < this.keyrows[i].length; ++j) {
 				const btn = table.rows[i].cells[j].querySelector("button");
