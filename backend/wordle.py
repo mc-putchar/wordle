@@ -6,7 +6,7 @@
 #    By: mcutura <mcutura@student.42berlin.de>      +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/07/06 01:06:12 by astavrop          #+#    #+#              #
-#    Updated: 2024/07/07 17:11:14 by astavrop         ###   ########.fr        #
+#    Updated: 2024/07/07 18:04:11 by mcutura          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -95,7 +95,6 @@ def script():
 def favicon():
     return FileResponse("frontend/favicon.ico")
 
-
 @app.get("/wallpaper.jpg")
 def wallpaper():
     return FileResponse("frontend/wallpaper.jpg")
@@ -147,8 +146,13 @@ def check_word(request: AttemptRequest):
                 counts[request.attempt[i]] -= 1
         result = {i: result[i] for i in range(len(result))}
 
+    if R_ABSENT in result.values() or R_PRESENT in result.values():
+        status = STATUS_INCOMPLETE
+    elif R_ABSENT not in result.values() and R_PRESENT not in result.values():
+        status = STATUS_CORRECT
+
     # User exceeded number of attempts
-    if database[request.token] > 5:
+    if database[request.token] > 6:
         status = STATUS_LOSER
 
     return AttemptResponse(
