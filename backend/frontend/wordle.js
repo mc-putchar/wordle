@@ -3,6 +3,10 @@ const user_token = "blabla"
 let currentRow = 0;
 let currentCell = 0;
 
+String.prototype.replaceAt = function(index, replacement) {
+	return this.substring(0, index) + replacement + this.substring(index + replacement.length);
+}
+
 function getKeyState(state) {
 	if (state === "absent")
 		return '0';
@@ -11,6 +15,24 @@ function getKeyState(state) {
 	if (state === "correct")
 		return '3';
 	return '1';
+}
+
+function updateWordDisplay(result) {
+	console.log(result);
+	if (!result) {
+		console.log("No result");
+		return;
+	}
+	const board = document.getElementById("gameboard");
+	const row = board.rows[currentRow - 1];
+	for (let i = 0; i < Object.keys(result).length; ++i) {
+		if (result[Object.keys(result)[i]] == "absent")
+			row.cells[i].className = "letter-absent";
+		else if (result[Object.keys(result)[i]] == "present")
+			row.cells[i].className = "letter-present";
+		else if (result[Object.keys(result)[i]] == "correct")
+			row.cells[i].className = "letter-correct";
+	}
 }
 
 function onKeyClick() {
@@ -47,14 +69,13 @@ async function onReturn() {
 			body: JSON.stringify({token: user_token, attempt: word})
 		});
 		const data = await response.json();
+		const result = data.result;
 		if (data.status === "correct") {
 			alert("WINNER");
 		} else if (data.status == "loser") {
 			alert("LOSER");
 		} else {
-			const result = data.result;
 			for (let i = 0; i < 5; ++i) {
-				console.log("Result[" + i + "]: " + result[i]);
 				this.setKeyState(word[i], result[i]);
 			}
 			this.updateKeys();
@@ -64,6 +85,7 @@ async function onReturn() {
 				// LOSE!
 			}
 		}
+		updateWordDisplay(result);
 	}
 }
 
@@ -72,7 +94,7 @@ class Keyboard {
 		this.element = document.createElement("table");
 		this.element.id = "key_table";
 		this.keyrows = ["qwertyuiop1", "asdfghjkl 0", "zxcvbnm    "];
-		this.keystates = ["1111111111", "111111111", "1111111"];
+		this.keystates = ["1111111111s", "111111111ss", "1111111ssss"];
 		this.keyrows.forEach(row => {
 			const trow = document.createElement("tr");
 			for (let i = 0; i < row.length; i++) {
@@ -95,6 +117,7 @@ class Keyboard {
 						break;
 					default:
 						btn.textContent = row[i];
+						btn.id = row[i];
 						btn.addEventListener('click', onKeyClick.bind(btn));
 						break;
 				}
@@ -103,20 +126,20 @@ class Keyboard {
 			}
 			this.element.appendChild(trow);
 		});
+		document.addEventListener("keyup", event => this.onKeyUp(event));
 	}
 	setKeyState(key, state) {
-		let i = 0, j = 0;
-		for (;i < 3; ++i) {
-			for (;j < this.keyrows[i].length; ++j) {
+		for (let i = 0; i < this.keyrows.length; ++i) {
+			for (let j = 0; j < this.keyrows[i].length; ++j) {
 				if (this.keyrows[i][j] === key) {
-					this.keystates[i][j] = getKeyState(state);
+					this.keystates[i] = this.keystates[i].replaceAt(j, getKeyState(state));
 					return;
 				}
 			}
 		}
 	}
 	updateKeys() {
-		const table = document.getElementById("keyboard").firstChild;
+		const table = document.getElementById("keyboard").querySelector("table");
 		for (let i = 0; i < 3; ++i) {
 			for (let j = 0; j < this.keyrows[i].length; ++j) {
 				const btn = table.rows[i].cells[j].querySelector("button");
@@ -138,6 +161,19 @@ class Keyboard {
 						break;
 				}
 			}
+		}
+	}
+	onKeyUp(event) {
+		const key = event.key;
+		if (key.length === 1 && /[a-zA-Z]/.test(key)) {
+			console.log(`Letter pressed: ${key}`);
+			document.getElementById(key).click();
+		} else if (key === 'Backspace') {
+			console.log('Backspace pressed');
+			document.getElementById("backspace").click();
+		} else if (key === 'Enter') {
+			console.log('Enter pressed');
+			document.getElementById("enter").click();
 		}
 	}
 };
