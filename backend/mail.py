@@ -104,7 +104,7 @@ print(body)
 
 # Send an email
 client.send_email(
-    to_address='sung-hle@student.42berlin.de',
+    to_address='',
     subject='Laws of Software',
     body=body,
     body_type='html'
