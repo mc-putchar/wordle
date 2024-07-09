@@ -1,10 +1,6 @@
 const WORD_LEN = 5;
 const MAX_ATTEMPTS = 6;
-<<<<<<< HEAD
 const TOAST_DELAY = 4000;
-=======
-const TOAST_DELAY = 3000;
->>>>>>> origin/dev
 
 let gameState = 0;
 let currentRow = 0;
@@ -158,7 +154,6 @@ async function onReturn() {
 				return;
 			}
 			const result = data.result;
-<<<<<<< HEAD
 			// console.log("attempt: " + data.current_attempt);
 			// console.log("currRow: " + currentRow);
 			// if (currentRow =! data.current_attempt - 1) {
@@ -171,8 +166,6 @@ async function onReturn() {
 			// 		}
 			// 	}
 			// }
-=======
->>>>>>> origin/dev
 			for (let i = 0; i < 5; ++i) {
 				this.setKeyState(word[i], getKeyState(result[i]));
 			}
@@ -182,17 +175,11 @@ async function onReturn() {
 			if (data.status === "correct") {
 				clearTimeout(toast("You won!", style = "won"));
 				gameState = 1;
-<<<<<<< HEAD
 				allowReset();
 			} else if (data.status == "loser") {
 				clearTimeout(toast("You lose!", style = "lost"));
 				gameState = -1;
 				allowReset();
-=======
-			} else if (data.status == "loser") {
-				clearTimeout(toast("You lose!", style = "lost"));
-				gameState = -1;
->>>>>>> origin/dev
 			}
 			updateWordDisplay(result);
 		} else {
@@ -286,7 +273,6 @@ class Keyboard {
 			document.getElementById("backspace").click();
 		else if (key === 'Enter')
 			document.getElementById("enter").click();
-<<<<<<< HEAD
 	}
 	reset() {
 		this.keystates = ["1111111111s", "111111111ss", "1111111ssss"];
@@ -307,8 +293,6 @@ class Keyboard {
 		bar.textContent = "";
 		bar.className = "";
 		localStorage.removeItem("uniqueToken");
-=======
->>>>>>> origin/dev
 	}
 };
 
