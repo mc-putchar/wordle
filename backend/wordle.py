@@ -103,6 +103,7 @@ def check_word(request: AttemptRequest):
     if session.query(Player).filter_by(id=request.token).count() < 1:
         player = Player(id=request.token, attempt_n=0)
         session.add(player)
+
     else:
         player = session.query(Player).filter_by(id=request.token).first()
 
@@ -156,6 +157,7 @@ def check_word(request: AttemptRequest):
 
     # User exceeded number of attempts
     if player.attempt_n >= 6 and status != STATUS_CORRECT:
+
         status = STATUS_LOSER
 
     return AttemptResponse(

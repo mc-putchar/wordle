@@ -202,6 +202,7 @@ button:hover {
 	-webkit-animation: fadein 0.5s, fadeout 0.5s 2.5s;
 	animation: fadein 0.5s, fadeout 0.5s 2.5s;
 }
+
 #snackbar.won {
 	visibility: visible;
 	position: relative;
@@ -220,6 +221,7 @@ button:hover {
 	-webkit-animation: fadein 0.5s, fadeout 0.5s 2.5s;
 	animation: fadein 0.5s, fadeout 0.5s 2.5s;
 }
+
 @-webkit-keyframes fadein {
 	from {top: 0; opacity: 0;}
 	to {top: 0.15rem; opacity: 1;}
