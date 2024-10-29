@@ -1,9 +1,19 @@
-version: '3.8'
+# version: '3.8'
+
+configs:
+  caddyfile:
+    file: "${PWD}/Caddyfile"
 
 services:
+  server:
+    image: caddy:2.8.4-alpine
+    configs:
+      - source: caddyfile
+        target: "/etc/caddy/Caddyfile"
+    ports:
+      - "0.0.0.0:4343:443"
+    restart: "unless-stopped"
   backend:
-      build:
-        context: ./backend
-      ports:
-        - "8080:8080"
-      restart: "unless-stopped"
+    build:
+      context: ./backend
+    restart: "unless-stopped"

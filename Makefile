@@ -7,7 +7,7 @@ start:
 stop:
 	$(DC) stop
 up:
-	$(DC) up --build
+	$(DC) up --build -d
 down:
 	$(DC) down
 re:

@@ -1,0 +1,6 @@
+localhost {
+	encode zstd gzip
+	handle {
+		reverse_proxy backend:8080
+	}
+}
